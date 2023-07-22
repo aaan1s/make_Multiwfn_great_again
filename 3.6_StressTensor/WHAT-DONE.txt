@@ -1,0 +1,5 @@
+function.f90 - subroutine CalcStressTensor
+sub.f90 - additions to subroutine showptprop (Stress tensor etc output at a point)
+          additions to subroutine setgrid (points massive for external grid was increased - see "allocate(extpt(numextpt,9)")
+
+0123dim.f90 - study3dim changes (See "if (igridsel==100) then" block)
