@@ -1872,7 +1872,7 @@ if (igridsel==100) then !Calculate value on a set of points loaded from external
 	!$OMP END PARALLEL DO
 
 	else if (ifuncsel==-228) then
-	!$OMP PARALLEL DO SHARED(extpt) PRIVATE(iextpt) schedule(dynamic) NUM_THREADS(nthreads)
+	!$OMP PARALLEL DO SHARED(extpt) PRIVATE(iextpt,stresstens) schedule(dynamic) NUM_THREADS(nthreads)
 	do iextpt=1,numextpt !Calculate function value
 		call CalcStressTensor(1,extpt(iextpt,1),extpt(iextpt,2),extpt(iextpt,3),stresstens)
 		extpt(iextpt,4)=stresstens(1,1)
@@ -1885,7 +1885,7 @@ if (igridsel==100) then !Calculate value on a set of points loaded from external
 	!$OMP END PARALLEL DO
 
 	else if (ifuncsel==-1488) then
-	!$OMP PARALLEL DO SHARED(extpt) PRIVATE(iextpt) schedule(dynamic) NUM_THREADS(nthreads)
+	!$OMP PARALLEL DO SHARED(extpt) PRIVATE(iextpt,divstress) schedule(dynamic) NUM_THREADS(nthreads)
 	do iextpt=1,numextpt !Calculate function value
 		call CalcStressTensor(2,extpt(iextpt,1),extpt(iextpt,2),extpt(iextpt,3),stresstens,divstress)
 		extpt(iextpt,4)=divstress(1)

@@ -13,6 +13,7 @@ contains
 real*8 function calcfuncall(ifunc,x,y,z)
 integer ifunc
 real*8 x,y,z
+real*8 stresstens(3,3), divstress(3)
 if (ifunc==1) then
 	if (allocated(b)) then
 		calcfuncall=fdens(x,y,z)
@@ -61,6 +62,35 @@ else if (ifunc==21) then
 calcfuncall=edrdmax(x,y,z)
 else if (ifunc==22) then
 calcfuncall=delta_g_IGM(x,y,z) !delta_g function, proposed in IGM original paper
+
+else if (ifunc==-22811) then ! print a11 of stress tensor 
+	call CalcStressTensor(1,x,y,z,stresstens)
+	calcfuncall=stresstens(1,1)
+else if (ifunc==-22812) then ! print a12 of stress tensor 
+	call CalcStressTensor(1,x,y,z,stresstens)
+	calcfuncall=stresstens(1,2)
+else if (ifunc==-22813) then ! print a13 of stress tensor 
+	call CalcStressTensor(1,x,y,z,stresstens)
+	calcfuncall=stresstens(1,3)
+else if (ifunc==-22822) then ! print a22 of stress tensor 
+	call CalcStressTensor(1,x,y,z,stresstens)
+	calcfuncall=stresstens(2,2)	
+else if (ifunc==-22823) then ! print a23 of stress tensor 
+	call CalcStressTensor(1,x,y,z,stresstens)
+	calcfuncall=stresstens(2,3)
+else if (ifunc==-22833) then ! print a33 of stress tensor 
+	call CalcStressTensor(1,x,y,z,stresstens)
+	calcfuncall=stresstens(3,3)	
+else if (ifunc==-14881) then ! print a1 of divergence stress tensor 
+	call CalcStressTensor(2,x,y,z,stresstens,divstress)
+	calcfuncall=divstress(1)
+else if (ifunc==-14882) then ! print a2 of divergence stress tensor 
+	call CalcStressTensor(2,x,y,z,stresstens,divstress)
+	calcfuncall=divstress(2)
+else if (ifunc==-14883) then ! print a1 of divergence stress tensor 
+	call CalcStressTensor(2,x,y,z,stresstens,divstress)
+	calcfuncall=divstress(3)
+
 else if (ifunc==100) then
 calcfuncall=userfunc(x,y,z)
 end if

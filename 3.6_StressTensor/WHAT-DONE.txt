@@ -1,5 +1,12 @@
 function.f90 - subroutine CalcStressTensor
+               output of StressTensor&&its divergence in calcfuncall function  
+
 sub.f90 - additions to subroutine showptprop (Stress tensor etc output at a point)
-          additions to subroutine setgrid (points massive for external grid was increased - see "allocate(extpt(numextpt,9)")
+          additions to subroutine setgrid (size of array for external grid was increased - see "allocate(extpt(numextpt,9)")
 
 0123dim.f90 - study3dim changes (See "if (igridsel==100) then" block)
+
+integr_SIB_public4.3_Stress.py - clumsy and fast solution for StressTensor etc surface integral calculation 
+                                 StressTensor dot n: -imode=Y -ifunc=x-228
+                                 StressTensor trace: -imode=N -ifunc=x-228
+                                 No output for Divergence, but it calculates it usind -ifunc=x-1488 

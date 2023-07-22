@@ -1145,7 +1145,7 @@ with open(CoreClusterFile) as BCPs:
                        _=[float(x) for x in _.strip().split()[3:]]
                        X.append(np.array([_[0:3],[_[1]]+_[3:5],[_[2],_[4],_[5]]])) 
 
-        print('X[-1] is ',X[-1])
+        print('X[0] is ',X[0])
 
         with open(os.path.join(exe_path, temp+'.S'), 'r') as inpf:
             S = [float(_.strip()) for _ in inpf.readlines()]
@@ -1154,7 +1154,7 @@ with open(CoreClusterFile) as BCPs:
         if imode == 'S':
             integration_result = sum(s for s in S)
         
-        elif imode == 'N':
+        elif imode == 'N' and userf not in ["-228","-1488"]:
             integration_result = sum([x * s for x, s in zip(X, S)])
         
         elif imode == 'Y' and userf not in ["-228","-1488"]:
@@ -1191,9 +1191,14 @@ with open(CoreClusterFile) as BCPs:
                 ir2 += x*s*np.dot(np.array(n)*(-1), np.array(rss[1]))/np.linalg.norm(rss[1])
             integration_result=[ir1,ir2,np.linalg.norm(R_intermolecular)]
 
-        elif imode == 'Y' and userf in ["-228","-1488"]:
-            integration_result = sum([s * np.dot(np.array(n), x) for x, s, n, in zip(X, S, normals)])
+        elif imode == 'Y' and userf =="-228":
+            integration_result = -sum([s * np.dot(np.array(n), x) for x, s, n, in zip(X, S, normals)])
             print("integration_result", integration_result)
+
+        elif imode == 'N' and userf == "-228":
+            integration_result = sum([np.trace(x) * s for x, s in zip(X, S)])
+            print("integration_result", integration_result)
+
         surface_area = sum(s for s in S)
 
         # remove temporary files
