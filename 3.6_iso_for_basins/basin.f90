@@ -1,3 +1,4 @@
+!!! Isovalue for integratebasin also
 !!!------ Forming basin for specific real spac e function, and integrate real space functions in the basins
 !!------ The method is adapted from J. Phys.: Condens. Matter 21 (2009) 084204
 !Grid must be ortho
@@ -497,7 +498,9 @@ do while(.true.)
 		write(*,"(' The number of interbasin grids:',i12)") numinterbas	
 		
 	else if (isel==2) then
-		call integratebasin
+		write(*,*) "Provide isosurface for basin limitation:"
+		read(*,*) basinisoval
+		call integratebasin(basinisoval)
 		
 	else if (isel==3.or.isel==4.or.isel==5.or.isel==7.or.isel==-7.or.isel==8) then
 		if (.not.allocated(b)) then
@@ -521,7 +524,7 @@ do while(.true.)
 			write(*,*) "Accuracy: 2>=3>>1     Time spent: 2>3>>1     Memory requirement: 3>2=1"
 	! 		write(*,*) "Robost: 1=2>3"
 			read(*,*) iseltmp
-			write(*,*) "Isosurface for basin limitation"
+			write(*,*) "Provide isosurface for basin limitation:"
 			read(*,*) basinisoval
 			call integratebasinmix(iseltmp,basinisoval)
 		else if (isel==-7) then
@@ -1740,7 +1743,7 @@ end subroutine
 
 
 !!------- Integrate a real space function in the basins already partitioned
-subroutine integratebasin
+subroutine integratebasin(basinisoval)
 use defvar
 use util
 use function
@@ -1749,6 +1752,7 @@ implicit real*8(a-h,o-z)
 real*8 intval(-1:numatt),basinvol(-1:numatt),intvalpriv(-1:numatt),basinvolpriv(-1:numatt)
 integer walltime1,walltime2
 character grdfilename*200
+real*8 basinisoval
 
 write(*,*) "Please select integrand:"
 write(*,*) "-2 Return"
@@ -1799,9 +1803,11 @@ do iz=2,nz-1
 			else
 				tmpval=calcfuncall(ifuncint,rnowx,rnowy,rnowz)
 			end if
-			irealatt=gridbas(ix,iy,iz)
-			intvalpriv(irealatt)=intvalpriv(irealatt)+tmpval
-			basinvolpriv(irealatt)=basinvolpriv(irealatt)+1
+                        if (tmpval>=basinisoval) then
+				irealatt=gridbas(ix,iy,iz)
+    				intvalpriv(irealatt)=intvalpriv(irealatt)+tmpval
+				basinvolpriv(irealatt)=basinvolpriv(irealatt)+1
+                        end if
 		end do
 	end do
     ifinish=ifinish+1
@@ -1816,7 +1822,7 @@ end do
 dvol=dx*dy*dz
 intval=intval*dvol
 basinvol=basinvol*dvol !Basin volume
-write(*,*) "  #Basin        Integral(a.u.)      Volume(a.u.^3)"
+write(*,*) "  #Basin        Integral(a.u.)      Volume(a.u.^3, >basinisoval)"
 do irealatt=1,numrealatt
 	write(*,"(i8,f22.10,f20.8)") irealatt,intval(irealatt),basinvol(irealatt)
 end do
